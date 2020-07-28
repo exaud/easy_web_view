@@ -126,7 +126,7 @@ class _EasyWebViewState extends State<EasyWebView> {
         ..style.width = width.toInt().toString()
         ..style.overflow = 'auto';
 
-      element.addEventListener('mousewheel', (event) {
+      element.addEventListener('wheel', (event) {
         if (event is WheelEvent) {
           element.scrollBy(0, event.deltaY);
         }
