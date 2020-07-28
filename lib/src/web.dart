@@ -1,4 +1,5 @@
 import 'dart:html' as html;
+import 'dart:html';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -17,7 +18,6 @@ class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
     this.convertToWidgets = false,
     this.headers = const {},
     this.widgetsTextSelectable = false,
-    @required this.onLoaded,
   })  : assert((isHtml && isMarkdown) == false),
         super(key: key);
 
@@ -50,25 +50,9 @@ class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
 
   @override
   final bool widgetsTextSelectable;
-
-  @override
-  final void Function() onLoaded;
 }
 
 class _EasyWebViewState extends State<EasyWebView> {
-  @override
-  void initState() {
-    widget?.onLoaded();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final _iframe = _iframeElementMap[widget.key];
-      _iframe.onLoad.listen((event) {
-        if (widget?.onLoaded != null) {
-          widget.onLoaded();
-        }
-      });
-    });
-    super.initState();
-  }
 
   @override
   void didUpdateWidget(EasyWebView oldWidget) {
@@ -120,7 +104,7 @@ class _EasyWebViewState extends State<EasyWebView> {
           child: RepaintBoundary(
             child: HtmlElementView(
               key: widget?.key,
-              viewType: 'iframe-$src',
+              viewType: 'div-$src',
             ),
           ),
         );
@@ -128,31 +112,36 @@ class _EasyWebViewState extends State<EasyWebView> {
     );
   }
 
-  static final _iframeElementMap = Map<Key, html.IFrameElement>();
+  static final _divElementMap = Map<Key, html.DivElement>();
 
   void _setup(String src, num width, num height) {
     final src = widget.src;
     // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory('iframe-$src', (int viewId) {
-      if (_iframeElementMap[widget.key] == null) {
-        _iframeElementMap[widget.key] = html.IFrameElement();
+    ui.platformViewRegistry.registerViewFactory('div-$src', (int viewId) {
+      if (_divElementMap[widget.key] == null) {
+        _divElementMap[widget.key] = html.DivElement();
       }
-      final element = _iframeElementMap[widget.key]
+      final element = _divElementMap[widget.key]
         ..style.border = '0'
-        ..allowFullscreen = widget.webAllowFullScreen
-        ..height = height.toInt().toString()
-        ..width = width.toInt().toString();
+        ..style.height = height.toInt().toString()
+        ..style.width = width.toInt().toString()
+        ..style.overflow = 'auto';
+
+      element.addEventListener('mousewheel', (event) {
+        if(event is WheelEvent) {
+          element.scrollBy(0, event.deltaY);
+        }
+      });
+
       if (src != null) {
         String _src = src;
         if (widget.isMarkdown) {
-          _src = "data:text/html;charset=utf-8," +
-              Uri.encodeComponent(EasyWebViewImpl.md2Html(src));
+          _src = EasyWebViewImpl.md2Html(src);
         }
         if (widget.isHtml) {
-          _src = "data:text/html;charset=utf-8," +
-              Uri.encodeComponent(EasyWebViewImpl.wrapHtml(src));
+          _src = src;
         }
-        element..src = _src;
+        element..innerHtml = _src;
       }
       return element;
     });

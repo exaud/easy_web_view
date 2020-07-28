@@ -14,13 +14,11 @@ class EasyWebViewImpl {
   final bool convertToWidgets;
   final Map<String, String> headers;
   final bool widgetsTextSelectable;
-  final void Function() onLoaded;
 
   EasyWebViewImpl({
     @required this.src,
     this.width,
     this.height,
-    @required this.onLoaded,
     this.webAllowFullScreen = true,
     this.isHtml = false,
     this.isMarkdown = false,

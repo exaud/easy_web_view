@@ -14,7 +14,6 @@ class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
     this.isMarkdown = false,
     this.convertToWidgets = false,
     this.headers = const {},
-    @required this.onLoaded,
     this.widgetsTextSelectable = false,
   })  : assert((isHtml && isMarkdown) == false),
         super(key: key);
@@ -48,9 +47,6 @@ class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
 
   @override
   final bool widgetsTextSelectable;
-
-  @override
-  final void Function() onLoaded;
 }
 
 class _EasyWebViewState extends State<EasyWebView> {
@@ -79,9 +75,6 @@ class _EasyWebViewState extends State<EasyWebView> {
     if (widget.isHtml) {
       _src = "data:text/html;charset=utf-8," +
           Uri.encodeComponent(EasyWebViewImpl.wrapHtml(url));
-    }
-    if (widget?.onLoaded != null) {
-      widget.onLoaded();
     }
     return _src;
   }
@@ -120,9 +113,6 @@ class _EasyWebViewState extends State<EasyWebView> {
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (val) {
             _controller = val;
-            if (widget?.onLoaded != null) {
-              widget.onLoaded();
-            }
           },
         );
       },
