@@ -53,7 +53,6 @@ class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
 }
 
 class _EasyWebViewState extends State<EasyWebView> {
-
   @override
   void didUpdateWidget(EasyWebView oldWidget) {
     if (oldWidget.height != widget.height) {
@@ -128,7 +127,7 @@ class _EasyWebViewState extends State<EasyWebView> {
         ..style.overflow = 'auto';
 
       element.addEventListener('mousewheel', (event) {
-        if(event is WheelEvent) {
+        if (event is WheelEvent) {
           element.scrollBy(0, event.deltaY);
         }
       });
@@ -141,7 +140,9 @@ class _EasyWebViewState extends State<EasyWebView> {
         if (widget.isHtml) {
           _src = src;
         }
-        element..innerHtml = _src;
+        element.setInnerHtml(_src,
+            validator: NodeValidatorBuilder.common(),
+            treeSanitizer: NodeTreeSanitizer.trusted);
       }
       return element;
     });

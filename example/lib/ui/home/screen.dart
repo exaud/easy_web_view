@@ -118,9 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           flex: 1,
                           child: EasyWebView(
                               src: src,
-                              onLoaded: () {
-                                print('$key: Loaded: $src');
-                              },
                               isHtml: _isHtml,
                               isMarkdown: _isMarkdown,
                               convertToWidgets: _useWidgets,
@@ -131,9 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         flex: 1,
                         child: EasyWebView(
-                            onLoaded: () {
-                              print('$key2: Loaded: $src2');
-                            },
                             src: src2,
                             isHtml: _isHtml,
                             isMarkdown: _isMarkdown,
@@ -157,9 +151,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: (open) ? 500 : 0,
                             child: EasyWebView(
                                 src: src3,
-                                onLoaded: () {
-                                  print('$key3: Loaded: $src3');
-                                },
                                 isHtml: _isHtml,
                                 isMarkdown: _isMarkdown,
                                 convertToWidgets: _useWidgets,
