@@ -1,11 +1,13 @@
+import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
 
 import 'impl.dart';
 
 class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
   const EasyWebView({
-    Key key,
-    @required this.src,
+    Key? key,
+    required this.src,
+    required this.onLoaded,
     this.height,
     this.width,
     this.webAllowFullScreen = true,
@@ -13,8 +15,9 @@ class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
     this.isMarkdown = false,
     this.convertToWidgets = false,
     this.headers = const {},
-    @required this.onLoaded,
     this.widgetsTextSelectable = false,
+    this.crossWindowEvents = const [],
+    this.webNavigationDelegate,
   })  : assert((isHtml && isMarkdown) == false),
         super(key: key);
 
@@ -22,13 +25,13 @@ class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
   _EasyWebViewState createState() => _EasyWebViewState();
 
   @override
-  final num height;
+  final double? height;
 
   @override
   final String src;
 
   @override
-  final num width;
+  final double? width;
 
   @override
   final bool webAllowFullScreen;
@@ -50,14 +53,20 @@ class EasyWebView extends StatefulWidget implements EasyWebViewImpl {
 
   @override
   final void Function() onLoaded;
+
+  @override
+  final List<CrossWindowEvent> crossWindowEvents;
+
+  @override
+  final WebNavigationDelegate? webNavigationDelegate;
 }
 
 class _EasyWebViewState extends State<EasyWebView> {
   @override
   Widget build(BuildContext context) {
     return OptionalSizedChild(
-      width: widget?.width,
-      height: widget?.height,
+      width: widget.width,
+      height: widget.height,
       builder: (w, h) => Placeholder(),
     );
   }
